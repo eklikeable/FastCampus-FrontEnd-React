@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { getData } from './api/data';
 import { useLocationDispatch, useLocationState } from './common/contexts';
@@ -12,7 +12,8 @@ function Menu() {
   const wholeData = async (sido) => {
     try {
       const res = await getData(sido);
-      dispatch({ type: 'apiDataChange', apiData: res });
+      await dispatch({ type: 'apiDataChange', apiData: res });
+      return res;
     } catch (e) {
       console.log(e);
     }
@@ -20,24 +21,24 @@ function Menu() {
 
   // 페이지 최초 렌더시 API DATA 요청
   useEffect(() => {
-    wholeData();
+    wholeData('서울');
   }, []);
 
   // 사용자의 시/도 선택이 바뀔 때 마다 실행 할 것
-  useEffect(() => {
-    wholeData(sido);
-    console.log('First station => ', apiData[0].stationName);
-    // stationChangeHandler(apiData[0]);
-  }, [sido]);
-
-  function sidoChangeHandler(value) {
-    console.log('sidoValue:', value);
+  const sidoChangeHandler = async (value) => {
     dispatch({ type: 'sidoChange', sido: value });
-  }
+    await wholeData(value).then((res) => {
+      dispatch({
+        type: 'stationChange',
+        station: res[0]['stationName'],
+      });
+    });
+    console.log('station: ', station);
+  };
 
+  // 사용자의 측정소 선택이 바뀔 때 마다 실행 할 것
   const stationChangeHandler = async (value) => {
     await dispatch({ type: 'stationChange', station: value });
-    console.log('stationValue:', value);
   };
 
   return (

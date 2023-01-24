@@ -16,7 +16,6 @@ export async function getData(sido) {
       .then((response) => response.json())
       .then((res) => {
         wholeData = res['response']['body']['items'];
-        // console.log(totalData);
       });
   } catch (e) {
     throw new Error('데이터를 불러오는데 실패했습니다.');
