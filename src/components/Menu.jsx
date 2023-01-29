@@ -3,9 +3,8 @@ import styled from 'styled-components';
 import { getData } from './api/data';
 import { useLocationDispatch, useLocationState } from './common/contexts';
 import Station from './menu/Station';
-import Card from './Card';
 
-function Menu() {
+function Menu({ isWhole }) {
   const { sido, station, apiData } = useLocationState();
   const dispatch = useLocationDispatch();
 
@@ -21,7 +20,7 @@ function Menu() {
 
   // 페이지 최초 렌더시 API DATA 요청
   useEffect(() => {
-    wholeData('서울');
+    wholeData(sido);
   }, []);
 
   // 사용자의 시/도 선택이 바뀔 때 마다 실행 할 것
@@ -67,21 +66,20 @@ function Menu() {
           <option value='경남'>경남</option>
           <option value='제주'>제주</option>
         </select>
-        <select
-          name='stationChoice'
-          id='stationChoice'
-          onChange={(e) => stationChangeHandler(e.target.value)}
-          value={station}
-        >
-          {apiData.map((data) => {
-            const { stationName } = data;
-            return <Station key={stationName} station={stationName} />;
-          })}
-        </select>
+        {isWhole ? null : (
+          <select
+            name='stationChoice'
+            id='stationChoice'
+            onChange={(e) => stationChangeHandler(e.target.value)}
+            value={station}
+          >
+            {apiData.map((data) => {
+              const { stationName } = data;
+              return <Station key={stationName} station={stationName} />;
+            })}
+          </select>
+        )}
       </Container>
-      <CardsBox>
-        <Card />
-      </CardsBox>
     </>
   );
 }
@@ -99,10 +97,4 @@ const Container = styled.div`
     padding: 10px;
     text-align: center;
   }
-`;
-
-const CardsBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
 `;

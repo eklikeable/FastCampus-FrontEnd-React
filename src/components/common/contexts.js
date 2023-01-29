@@ -2,8 +2,8 @@ import { createContext, useContext, useReducer } from 'react';
 
 const initialState = {
   apiData: [],
-  sido: '서울',
-  station: '중구',
+  sido: '경기',
+  station: '양평읍',
   favorite: [],
 };
 
